@@ -1,4 +1,4 @@
-package main
+package repl
 
 import (
 	"bufio"
@@ -10,7 +10,7 @@ import (
 	"github.com/lucasgjanot/go-cli-pokedex/internal/config"
 )
 
-func startRepl(cfg *config.Config) {
+func StartRepl(cfg *config.Config) {
 	reader := bufio.NewScanner(os.Stdin)
 	for {
 		fmt.Print("Pokedex > ")

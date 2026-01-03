@@ -5,6 +5,7 @@ import (
 
 	"github.com/lucasgjanot/go-cli-pokedex/internal/config"
 	"github.com/lucasgjanot/go-cli-pokedex/internal/pokeapi"
+	"github.com/lucasgjanot/go-cli-pokedex/internal/repl"
 )
 
 func main() {
@@ -12,5 +13,5 @@ func main() {
 	cfg := &config.Config{
 		PokeapiClient: &pokeClient,
 	}
-	startRepl(cfg)
+	repl.StartRepl(cfg)
 }

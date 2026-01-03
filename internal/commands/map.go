@@ -10,6 +10,9 @@ import (
 type LocationArea struct{}
 
 func CommandMapf(cfg *config.Config) error {
+	if cfg.PrevLocationsURL != nil && cfg.NextLocationsURL == nil {
+		return errors.New("you're on the last page")
+	}
 	locationsResp, err := cfg.PokeapiClient.ListLocations(cfg.NextLocationsURL)
 	if err != nil {
 		return err
