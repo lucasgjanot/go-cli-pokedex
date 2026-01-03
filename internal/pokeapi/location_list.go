@@ -3,6 +3,7 @@ package pokeapi
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 )
 
@@ -12,10 +13,21 @@ type LocationArea struct {
 
 func (c *Client) ListLocations(pageURL *string) (RespShallowLocations, error) {
 	var zero RespShallowLocations
+
 	url := baseURL + "/location-area"
 
 	if pageURL != nil {
 		url = *pageURL
+	}
+
+	if val, ok := c.cache.Get(url); ok {
+		locationsResp := RespShallowLocations{}
+		err := json.Unmarshal(val, &locationsResp)
+		if err != nil {
+			return zero, fmt.Errorf("Error at decoding cache json: %w", err)
+		}
+
+		return locationsResp, nil
 	}
 
 	res, err := http.Get(url)
@@ -24,11 +36,17 @@ func (c *Client) ListLocations(pageURL *string) (RespShallowLocations, error) {
 	}
 	defer res.Body.Close()
 
-	var locationsResp RespShallowLocations
-	decoder := json.NewDecoder(res.Body)
-	if err := decoder.Decode(&locationsResp); err != nil {
-		return zero, fmt.Errorf("Error at decoding json: %w", err)
+	data, err := io.ReadAll(res.Body)
+	if err != nil {
+		return zero, fmt.Errorf("Error at reading response body: %w", err)
 	}
-	
+
+	locationsResp := RespShallowLocations{}
+	err = json.Unmarshal(data, &locationsResp)
+	if err != nil {
+		return zero, fmt.Errorf("Error at parsing response body: %w", err)
+	}
+
+	c.cache.Add(url, data)
 	return locationsResp, nil
 }

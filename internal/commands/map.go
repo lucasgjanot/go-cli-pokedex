@@ -9,7 +9,10 @@ import (
 
 type LocationArea struct{}
 
-func CommandMapf(cfg *config.Config) error {
+func CommandMapf(cfg *config.Config, args ...string) error {
+	if len(args) != 0 {
+		return errors.New("usage: map")
+	}
 	if cfg.PrevLocationsURL != nil && cfg.NextLocationsURL == nil {
 		return errors.New("you're on the last page")
 	}
@@ -29,20 +32,24 @@ func CommandMapf(cfg *config.Config) error {
 
 }
 
-func CommandMapb(cfg *config.Config) error {
+func CommandMapb(cfg *config.Config, args ...string) error {
+	if len(args) != 0 {
+		fmt.Println("usage: mapb")
+	}
+
 	if cfg.PrevLocationsURL == nil {
 		return errors.New("you're on the first page")
 	}
 
-	locationsResp, err := cfg.PokeapiClient.ListLocations(cfg.PrevLocationsURL)
+	locationResp, err := cfg.PokeapiClient.ListLocations(cfg.PrevLocationsURL)
 	if err != nil {
 		return err
 	}
 
-	cfg.NextLocationsURL = locationsResp.Next
-	cfg.PrevLocationsURL = locationsResp.Previous
+	cfg.NextLocationsURL = locationResp.Next
+	cfg.PrevLocationsURL = locationResp.Previous
 
-	for _, loc := range locationsResp.Results {
+	for _, loc := range locationResp.Results {
 		fmt.Println(loc.Name)
 	}
 	return nil

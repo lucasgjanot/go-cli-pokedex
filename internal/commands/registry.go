@@ -1,11 +1,16 @@
 package commands
 
-import "github.com/lucasgjanot/go-cli-pokedex/internal/config"
+import (
+	"fmt"
+	"time"
+
+	"github.com/lucasgjanot/go-cli-pokedex/internal/config"
+)
 
 type cliCommand struct {
 	name        string
 	description string
-	Callback    func(*config.Config) error
+	Callback    func(*config.Config, ...string) error
 }
 
 func GetCommands() map[string]cliCommand {
@@ -30,5 +35,17 @@ func GetCommands() map[string]cliCommand {
 			description: "Get the previous page of locations",
 			Callback:    CommandMapb,
 		},
+		"explore": {
+			name: "explore <location_name>",
+			description: "Explore a location",
+			Callback: CommandExplore,
+		},
+	}
+}
+
+func Dotwait(nDots int) {
+	for i := 0; i < nDots; i++ {
+		time.Sleep(500 * time.Millisecond)
+		fmt.Print(".")
 	}
 }

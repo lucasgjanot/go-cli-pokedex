@@ -6,13 +6,14 @@ import (
 	"github.com/lucasgjanot/go-cli-pokedex/internal/config"
 )
 
-func CommandHelp(cfg *config.Config) error {
+func CommandHelp(cfg *config.Config, args ...string) error {
 	commandsRegistry := GetCommands()
 	fmt.Println("Welcome to the Pokedex!")
 	fmt.Println("Usage: ")
 	fmt.Println()
-	for _, value := range commandsRegistry {
-		fmt.Printf("%s: %s\n", value.name, value.description)
+	for _, cmd := range commandsRegistry {
+		fmt.Printf("%s: %s\n", cmd.name, cmd.description)
 	}
+	fmt.Println()
 	return nil
 }

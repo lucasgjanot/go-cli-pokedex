@@ -22,10 +22,15 @@ func StartRepl(cfg *config.Config) {
 		}
 
 		commandName := words[0]
+		args := []string{}
+		if len(words) > 1 {
+			args = words[1:]
+		}
 
+		fmt.Println(args)
 		command, exists := commands.GetCommands()[commandName]
 		if exists {
-			err := command.Callback(cfg)
+			err := command.Callback(cfg, args...)
 			if err != nil {
 				fmt.Println(err)
 			}
