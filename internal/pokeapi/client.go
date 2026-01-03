@@ -1,6 +1,7 @@
 package pokeapi
 
 import (
+	"errors"
 	"io"
 	"net/http"
 	"time"
@@ -9,7 +10,7 @@ import (
 )
 
 type Client struct {
-	cache pokecache.Cache
+	cache      pokecache.Cache
 	httpClient http.Client
 }
 
@@ -25,6 +26,9 @@ func NewClient(timeout, cacheInterval time.Duration) Client {
 func GetData(url string) ([]byte, error) {
 	var zero []byte
 	res, err := http.Get(url)
+	if res.StatusCode == 404 {
+		return zero, errors.New("Resourse not found")
+	}
 	if err != nil {
 		return zero, err
 	}
@@ -36,4 +40,4 @@ func GetData(url string) ([]byte, error) {
 	}
 
 	return data, nil
-} 
+}
