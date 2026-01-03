@@ -27,7 +27,6 @@ func StartRepl(cfg *config.Config) {
 			args = words[1:]
 		}
 
-		fmt.Println(args)
 		command, exists := commands.GetCommands()[commandName]
 		if exists {
 			err := command.Callback(cfg, args...)

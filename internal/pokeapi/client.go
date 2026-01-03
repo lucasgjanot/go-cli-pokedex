@@ -1,6 +1,7 @@
 package pokeapi
 
 import (
+	"io"
 	"net/http"
 	"time"
 
@@ -21,3 +22,18 @@ func NewClient(timeout, cacheInterval time.Duration) Client {
 	}
 }
 
+func GetData(url string) ([]byte, error) {
+	var zero []byte
+	res, err := http.Get(url)
+	if err != nil {
+		return zero, err
+	}
+	defer res.Body.Close()
+
+	data, err := io.ReadAll(res.Body)
+	if err != nil {
+		return zero, err
+	}
+
+	return data, nil
+} 
